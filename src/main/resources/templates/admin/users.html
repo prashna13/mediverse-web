@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <a href="/logout" class="text-red-600 hover:text-red-700">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Users Management</h1>
+                <p class="text-gray-600 mt-2">Manage all system users</p>
+            </div>
+
+            <!-- Add New User Button -->
+            <div class="mb-6">
+                <a href="/admin/users/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>Add New User
+                </a>
+            </div>
+
+            <!-- Users Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">All Users</h2>
+                </div>
+                
+                <div th:if="${users.empty}" class="text-center py-8 text-gray-500">
+                    <i class="fas fa-users text-3xl mb-3"></i>
+                    <p>No users found</p>
+                </div>
+                
+                <div th:if="${!users.empty}" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Phone
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Role
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Created At
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:each="user : ${users}">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${user.id}">
+                                    1
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span th:text="${user.firstName + ' ' + user.lastName}">John Doe</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.email}">
+                                    john@example.com
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.phoneNumber}">
+                                    +1-555-1234
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                          th:text="${user.role.name()}"
+                                          th:classappend="${user.role.name() == 'ADMIN'} ? 'bg-red-100 text-red-800' : 
+                                                         (${user.role.name() == 'DOCTOR'} ? 'bg-green-100 text-green-800' : 
+                                                         (${user.role.name() == 'PATIENT'} ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'))">
+                                        PATIENT
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                          th:text="${user.isActive ? 'Active' : 'Inactive'}"
+                                          th:classappend="${user.isActive} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                        Active
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd')}">
+                                    2025-01-01
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a th:href="@{/admin/users/{id}/view(id=${user.id})}" class="text-green-600 hover:text-green-900 mr-3">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-transparent border-none p-0 cursor-pointer">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-medium" th:text="${users.size()}">0</span> users
+                </div>
+                <div class="flex space-x-2">
+                    <!-- Add pagination controls here if needed -->
+                    <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50" disabled>
+                        Previous
+                    </button>
+                    <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50" disabled>
+                        Next
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments Management - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <div th:replace="fragments/logout :: logout-link"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Departments Management</h1>
+                <p class="text-gray-600 mt-2">Manage hospital departments and their information</p>
+            </div>
+
+            <!-- Add New Department Button -->
+            <div class="mb-6">
+                <a href="/admin/departments/new" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>Add New Department
+                </a>
+            </div>
+
+            <!-- Departments Grid -->
+            <div th:if="${departments.empty}" class="text-center py-8 text-gray-500">
+                <i class="fas fa-building text-3xl mb-3"></i>
+                <p>No departments found</p>
+            </div>
+
+            <div th:if="${!departments.empty}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div th:each="department : ${departments}" class="bg-white rounded-lg shadow hover:shadow-lg transition duration-300">
+                    <div class="p-6">
+                        <!-- Department Header -->
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-stethoscope text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800" th:text="${department.name}">Cardiology</h3>
+                                <p class="text-sm text-gray-500">Department</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Department Description -->
+                        <p class="text-gray-600 mb-4" th:text="${department.description}">
+                            Comprehensive cardiac care and treatment services.
+                        </p>
+                        
+                        <!-- Department Details -->
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-user-md text-blue-600 mr-2"></i>
+                                <span>Head: <span th:text="${department.headDoctor}">Dr. Sarah Johnson</span></span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-envelope text-blue-600 mr-2"></i>
+                                <span th:text="${department.email}">cardiology@mediverse.com</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-phone text-blue-600 mr-2"></i>
+                                <span th:text="${department.phoneNumber}">+1-555-0001</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Department Status -->
+                        <div class="mb-4">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                  th:text="${department.isActive ? 'Active' : 'Inactive'}"
+                                  th:classappend="${department.isActive} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                Active
+                            </span>
+                        </div>
+                        
+                        <!-- Department Actions -->
+                        <div class="flex flex-col space-y-2">
+                            <div class="flex space-x-2">
+                                <a th:href="@{/admin/departments/{id}/view(id=${department.id})}" 
+                                   class="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-center hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-eye mr-1"></i>View
+                                </a>
+                                <a th:href="@{/admin/departments/{id}/edit(id=${department.id})}" 
+                                   class="flex-1 bg-green-600 text-white py-2 px-3 rounded text-center hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </a>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a th:href="@{/admin/departments/{id}/doctors(id=${department.id})}" 
+                                   class="flex-1 bg-purple-600 text-white py-2 px-3 rounded text-center hover:bg-purple-700 transition duration-300">
+                                    <i class="fas fa-users mr-1"></i>Doctors
+                                </a>
+                                <form th:action="@{/admin/departments/{id}/delete(id=${department.id})}" method="post" class="flex-1" 
+                                      onsubmit="return confirm('Are you sure you want to delete this department? This action cannot be undone and will affect all associated doctors and appointments.')">
+                                    <button type="submit" class="w-full bg-red-600 text-white py-2 px-3 rounded text-center hover:bg-red-700 transition duration-300">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Total Departments</h3>
+                            <p class="text-2xl font-bold text-blue-600" th:text="${departments.size()}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Active</h3>
+                            <p class="text-2xl font-bold text-green-600" th:text="${#lists.size(departments.?[isActive == true])}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-yellow-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Total Doctors</h3>
+                            <p class="text-2xl font-bold text-yellow-600">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Appointments</h3>
+                            <p class="text-2xl font-bold text-purple-600">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

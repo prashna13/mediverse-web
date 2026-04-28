@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <!-- Logo -->
+                <a href="/" class="navbar-logo">
+                    <i class="fas fa-hospital"></i>
+                    <span class="navbar-brand">Mediverse</span>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/services">Services</a>
+                    <a href="/doctors">Doctors</a>
+                    <a href="/departments" class="active">Departments</a>
+                    <a href="/branches">Branches</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="navbar-actions">
+                    <!-- For Unauthenticated Users -->
+                    <div sec:authorize="!isAuthenticated()" class="auth-section">
+                        <a href="/login" class="login-btn">Login</a>
+                        <a href="/register" class="register-btn">Register</a>
+                    </div>
+                    
+                    <!-- For Authenticated Users -->
+                    <div sec:authorize="isAuthenticated()" class="dashboard-section">
+                        <!-- Role-based Dashboard Links -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="dashboard-btn admin">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Admin Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('DOCTOR')">
+                            <a href="/doctor/dashboard" class="dashboard-btn doctor">
+                                <i class="fas fa-user-md"></i>
+                                Doctor Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/dashboard" class="dashboard-btn patient">
+                                <i class="fas fa-user"></i>
+                                My Dashboard
+                            </a>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name" class="username"></span>
+                            <a href="/logout" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Medical Departments</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Explore our comprehensive range of medical departments, each led by experienced 
+                specialists and equipped with state-of-the-art facilities.
+            </p>
+        </div>
+
+        <!-- Departments Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Department Card -->
+            <div th:each="department : ${departments}" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <div class="p-6">
+                    <!-- Department Icon -->
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                            <i class="fas fa-heartbeat text-blue-600 text-2xl" th:if="${department.name == 'Cardiology'}"></i>
+                            <i class="fas fa-brain text-blue-600 text-2xl" th:if="${department.name == 'Neurology'}"></i>
+                            <i class="fas fa-bone text-blue-600 text-2xl" th:if="${department.name == 'Orthopedics'}"></i>
+                            <i class="fas fa-baby text-blue-600 text-2xl" th:if="${department.name == 'Pediatrics'}"></i>
+                            <i class="fas fa-ambulance text-blue-600 text-2xl" th:if="${department.name == 'Emergency Medicine'}"></i>
+                            <i class="fas fa-x-ray text-blue-600 text-2xl" th:if="${department.name == 'Radiology'}"></i>
+                            <i class="fas fa-stethoscope text-blue-600 text-2xl" th:unless="${department.name == 'Cardiology' || department.name == 'Neurology' || department.name == 'Orthopedics' || department.name == 'Pediatrics' || department.name == 'Emergency Medicine' || department.name == 'Radiology'}"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${department.name}">Cardiology</h3>
+                    </div>
+                    
+                    <!-- Department Info -->
+                    <div class="text-center mb-4">
+                        <p class="text-gray-600 mb-4" th:text="${department.description}">
+                            Comprehensive heart and cardiovascular care with advanced diagnostic and treatment options.
+                        </p>
+                    </div>
+                    
+                    <!-- Department Head -->
+                    <div class="border-t pt-4 mb-4">
+                        <p class="text-sm text-gray-600 mb-1">
+                            <i class="fas fa-user-md mr-2"></i>
+                            <strong>Department Head:</strong>
+                        </p>
+                        <p class="text-sm text-gray-800" th:text="${department.headDoctor}">Dr. Sarah Johnson</p>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="border-t pt-4 mb-4">
+                        <p class="text-sm text-gray-600 mb-2">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span th:text="${department.email}">cardiology@mediverse.com</span>
+                        </p>
+                        <p class="text-sm text-gray-600 mb-4">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span th:text="${department.phoneNumber}">+1 (555) 123-4567</span>
+                        </p>
+                    </div>
+                    
+                    <!-- Services List -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-2">Key Services:</h4>
+                        <div class="text-xs text-gray-600 space-y-1">
+                            <div th:switch="${department.name}">
+                                <div th:case="'Cardiology'">
+                                    <p>• Interventional Cardiology</p>
+                                    <p>• Cardiac Surgery</p>
+                                    <p>• Heart Failure Treatment</p>
+                                    <p>• Preventive Cardiology</p>
+                                </div>
+                                <div th:case="'Neurology'">
+                                    <p>• Neurosurgery</p>
+                                    <p>• Stroke Treatment</p>
+                                    <p>• Epilepsy Care</p>
+                                    <p>• Movement Disorders</p>
+                                </div>
+                                <div th:case="'Orthopedics'">
+                                    <p>• Joint Replacement</p>
+                                    <p>• Sports Medicine</p>
+                                    <p>• Spine Surgery</p>
+                                    <p>• Trauma Surgery</p>
+                                </div>
+                                <div th:case="'Pediatrics'">
+                                    <p>• Pediatric Oncology</p>
+                                    <p>• Neonatal Care</p>
+                                    <p>• Childhood Vaccines</p>
+                                    <p>• Developmental Care</p>
+                                </div>
+                                <div th:case="'Emergency Medicine'">
+                                    <p>• Trauma Care</p>
+                                    <p>• Critical Care</p>
+                                    <p>• Cardiac Emergency</p>
+                                    <p>• Stroke Care</p>
+                                </div>
+                                <div th:case="'Radiology'">
+                                    <p>• MRI & CT Scans</p>
+                                    <p>• Ultrasound</p>
+                                    <p>• Mammography</p>
+                                    <p>• Interventional Radiology</p>
+                                </div>
+                                <div th:case="*">
+                                    <p>• Comprehensive Care</p>
+                                    <p>• Advanced Treatments</p>
+                                    <p>• Expert Consultations</p>
+                                    <p>• Emergency Services</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="space-y-2">
+                        <a th:href="@{/doctors(departmentId=${department.id})}" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center block text-sm">
+                            View Doctors
+                        </a>
+                        <div sec:authorize="!isAuthenticated()">
+                            <a href="/login" class="w-full border border-blue-600 text-blue-600 py-2 px-4 rounded-lg hover:bg-blue-50 transition duration-300 text-center block text-sm">
+                                Book Appointment
+                            </a>
+                        </div>
+                        <div sec:authorize="isAuthenticated()">
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/book-appointment" class="w-full border border-blue-600 text-blue-600 py-2 px-4 rounded-lg hover:bg-blue-50 transition duration-300 text-center block text-sm">
+                                    Book Appointment
+                                </a>
+                            </div>
+                            <div sec:authorize="!hasRole('PATIENT')">
+                                <span class="w-full border border-gray-400 text-gray-500 py-2 px-4 rounded-lg cursor-not-allowed text-center block text-sm">
+                                    Patient Access Required
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- No Departments Message -->
+        <div th:if="${#lists.isEmpty(departments)}" class="text-center py-12">
+            <i class="fas fa-hospital text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No Departments Available</h3>
+            <p class="text-gray-500">Please check back later or contact us for more information.</p>
+        </div>
+
+        <!-- Emergency Services Highlight -->
+        <div class="mt-16 bg-red-50 border border-red-200 rounded-lg p-8">
+            <div class="flex items-center justify-center mb-4">
+                <div class="bg-red-100 rounded-full p-4">
+                    <i class="fas fa-ambulance text-red-600 text-3xl"></i>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">24/7 Emergency Services</h2>
+            <p class="text-gray-600 text-center mb-6 max-w-2xl mx-auto">
+                Our Emergency Department is staffed 24 hours a day, 7 days a week with board-certified 
+                emergency physicians and experienced nursing staff ready to handle any medical emergency.
+            </p>
+            <div class="text-center">
+                <div class="text-3xl font-bold text-red-600 mb-2">911</div>
+                <p class="text-gray-600">For life-threatening emergencies</p>
+                <p class="text-sm text-gray-500 mt-2">Or call our main number: +1 (555) 123-4567</p>
+            </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="mt-16 bg-blue-600 text-white rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-center mb-8">Quick Access</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <i class="fas fa-user-md text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Find a Specialist</h3>
+                    <p class="text-blue-100 mb-4">Browse our expert medical team</p>
+                    <a href="/doctors" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        View Doctors
+                    </a>
+                </div>
+                <div>
+                    <i class="fas fa-calendar-check text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Book Appointment</h3>
+                    <p class="text-blue-100 mb-4">Schedule your visit online</p>
+                    <div sec:authorize="!isAuthenticated()">
+                        <a href="/login" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                            Book Now
+                        </a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/book-appointment" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                                Book Now
+                            </a>
+                        </div>
+                        <div sec:authorize="!hasRole('PATIENT')">
+                            <span class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
+                                Patient Access Required
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <i class="fas fa-info-circle text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Get Information</h3>
+                    <p class="text-blue-100 mb-4">Contact us for inquiries</p>
+                    <a href="/contact" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">
+                        Your trusted healthcare partner, providing exceptional medical services with compassion and excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Doctors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Emergency</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            Emergency: 911
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-hospital mr-2"></i>
+                            24/7 Emergency Room
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            +1 (555) 123-4567
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-envelope mr-2"></i>
+                            info@mediverse.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

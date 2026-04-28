@@ -1,0 +1,246 @@
+/* Navbar Consistent Spacing Styles */
+.navbar-custom {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.navbar-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem;
+}
+
+/* Logo Section */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.navbar-logo i {
+    color: #2563eb;
+    font-size: 1.5rem;
+}
+
+.navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* Navigation Links */
+.navbar-nav {
+    display: none;
+    align-items: center;
+    gap: 2rem;
+}
+
+.navbar-nav a {
+    color: #4b5563;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.navbar-nav a:hover {
+    color: #2563eb;
+}
+
+.navbar-nav a.active {
+    color: #2563eb;
+    border-bottom: 2px solid #2563eb;
+}
+
+/* Right Section */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Authentication Section */
+.auth-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.auth-section .login-btn {
+    color: #4b5563;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease;
+}
+
+.auth-section .login-btn:hover {
+    color: #2563eb;
+}
+
+.auth-section .register-btn {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.auth-section .register-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.dashboard-btn i {
+    font-size: 0.875rem;
+}
+
+.dashboard-btn.admin {
+    background-color: #dc2626;
+}
+
+.dashboard-btn.admin:hover {
+    background-color: #b91c1c;
+}
+
+.dashboard-btn.doctor {
+    background-color: #16a34a;
+}
+
+.dashboard-btn.doctor:hover {
+    background-color: #15803d;
+}
+
+.dashboard-btn.patient {
+    background-color: #2563eb;
+}
+
+.dashboard-btn.patient:hover {
+    background-color: #1d4ed8;
+}
+
+/* User Info Section */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-left: 1rem;
+    border-left: 1px solid #e5e7eb;
+}
+
+.user-info i {
+    color: #6b7280;
+    font-size: 1.25rem;
+}
+
+.user-info .username {
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.user-info .logout-btn {
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.user-info .logout-btn:hover {
+    color: #b91c1c;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #4b5563;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .navbar-nav {
+        display: flex;
+    }
+    
+    .mobile-menu-btn {
+        display: none;
+    }
+    
+    .navbar-container {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .navbar-container {
+        padding: 0 2rem;
+    }
+}
+
+/* Mobile Menu (when expanded) */
+.mobile-menu {
+    display: none;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem;
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+.mobile-menu a {
+    display: block;
+    color: #4b5563;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobile-menu a:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu a:hover,
+.mobile-menu a.active {
+    color: #2563eb;
+}

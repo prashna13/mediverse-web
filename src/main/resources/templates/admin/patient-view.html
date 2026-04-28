@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard - Patient Details</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <a href="/logout" class="text-red-600 hover:text-red-700">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Patient Details</h1>
+                    <p class="text-gray-600 mt-2">View patient information and profile</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a th:href="@{/admin/patients/{id}/medical-history(id=${patient.id})}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        <i class="fas fa-file-medical mr-2"></i>Medical History
+                    </a>
+                    <a th:href="@{/admin/patients/{id}/edit(id=${patient.id})}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                        <i class="fas fa-edit mr-2"></i>Edit Patient
+                    </a>
+                    <a href="/admin/patients" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Patients
+                    </a>
+                </div>
+            </div>
+
+            <!-- Patient Information Card -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Patient Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Patient ID</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.patientId}">PAT001</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.user.firstName + ' ' + patient.user.lastName}">John Doe</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.user.email}">john@example.com</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.user.phoneNumber}">+1-555-1234</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.gender}">Male</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                        <p class="text-lg text-gray-900" th:text="${#temporals.format(patient.dateOfBirth, 'yyyy-MM-dd')}">1990-01-01</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800" th:text="${patient.bloodGroup}">
+                            O+
+                        </span>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Registration Date</label>
+                        <p class="text-lg text-gray-900" th:text="${#temporals.format(patient.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"
+                              th:text="${patient.user.isActive ? 'Active' : 'Inactive'}"
+                              th:classappend="${patient.user.isActive} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="bg-white rounded-lg shadow p-6" th:if="${patient.address}">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div th:if="${patient.address}">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.address}">123 Main St, City, State 12345</p>
+                    </div>
+                    
+                    <div th:if="${patient.emergencyContact}">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Emergency Contact</label>
+                        <p class="text-lg text-gray-900" th:text="${patient.emergencyContact}">+1-555-9999</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Patients - Mediverse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-heartbeat text-blue-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-gray-800">Mediverse</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium">About</a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                    <a href="/doctors" class="text-gray-700 hover:text-blue-600 font-medium">Doctors</a>
+                    <a href="/departments" class="text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                    <a href="/branches" class="text-gray-700 hover:text-blue-600 font-medium">Branches</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                    
+                    <div sec:authorize="isAuthenticated()" class="flex items-center space-x-2">
+                        <div class="flex space-x-2">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                                    <i class="fas fa-cog mr-2"></i>Admin
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('DOCTOR')">
+                                <a href="/doctor/dashboard" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-user-md mr-2"></i>Doctor
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-user mr-2"></i>Patient
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-600">Welcome, <span th:text="${user.firstName}">Doctor</span></span>
+                            <div class="relative">
+                                <a href="/logout" class="ml-4 text-red-600 hover:text-red-700">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Doctor Panel</h3>
+                <a href="/doctor/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                </a>
+                <a href="/doctor/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i> Appointments
+                </a>
+                <a href="/doctor/schedule" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-clock mr-3"></i> Schedule
+                </a>
+                <a href="/doctor/patients" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-users mr-3"></i> Patients
+                </a>
+                <a href="/doctor/profile" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user mr-3"></i> Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800">My Patients</h1>
+                    <p class="text-gray-600 mt-2">Manage and view your patient information</p>
+                </div>
+
+                <!-- Patient Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Total Patients</h3>
+                                <p class="text-2xl font-bold text-blue-600" th:text="${uniquePatientsCount}">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-calendar-check text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Total Appointments</h3>
+                                <p class="text-2xl font-bold text-green-600" th:text="${#lists.size(appointments)}">45</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-clock text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold text-gray-800">This Month</h3>
+                                <p class="text-2xl font-bold text-yellow-600">8</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients List -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800">Patient List</h2>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Visit</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Visits</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="appointment : ${appointments}" th:if="${appointmentStat.index == 0 or appointments[appointmentStat.index - 1].patient.id != appointment.patient.id}">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600"></i>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900" th:text="${appointment.patient.user.firstName + ' ' + appointment.patient.user.lastName}">John Doe</div>
+                                                <div class="text-sm text-gray-500">Patient ID: <span th:text="${appointment.patient.id}">001</span></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900" th:text="${appointment.patient.user.email}">john@example.com</div>
+                                        <div class="text-sm text-gray-500" th:text="${appointment.patient.user.phoneNumber ?: 'No phone'}">+1 234 567 890</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#temporals.format(appointment.appointmentDateTime, 'MMM dd, yyyy')}">Jan 15, 2024</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <span th:text="${patientVisitCount}">3</span> visits
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Empty state -->
+                                <tr th:if="${#lists.isEmpty(appointments)}">
+                                    <td colspan="5" class="px-6 py-12 text-center">
+                                        <div class="text-gray-500">
+                                            <i class="fas fa-users text-4xl mb-4"></i>
+                                            <p class="text-lg">No patients found</p>
+                                            <p class="text-sm">Your patient list will appear here once you have appointments.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

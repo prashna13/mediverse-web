@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <!-- Logo -->
+                <a href="/" class="navbar-logo">
+                    <i class="fas fa-hospital"></i>
+                    <span class="navbar-brand">Mediverse</span>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/about" class="active">About</a>
+                    <a href="/services">Services</a>
+                    <a href="/doctors">Doctors</a>
+                    <a href="/departments">Departments</a>
+                    <a href="/branches">Branches</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="navbar-actions">
+                    <!-- For Unauthenticated Users -->
+                    <div sec:authorize="!isAuthenticated()" class="auth-section">
+                        <a href="/login" class="login-btn">Login</a>
+                        <a href="/register" class="register-btn">Register</a>
+                    </div>
+                    
+                    <!-- For Authenticated Users -->
+                    <div sec:authorize="isAuthenticated()" class="dashboard-section">
+                        <!-- Role-based Dashboard Links -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="dashboard-btn admin">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Admin Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('DOCTOR')">
+                            <a href="/doctor/dashboard" class="dashboard-btn doctor">
+                                <i class="fas fa-user-md"></i>
+                                Doctor Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/dashboard" class="dashboard-btn patient">
+                                <i class="fas fa-user"></i>
+                                My Dashboard
+                            </a>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name" class="username"></span>
+                            <a href="/logout" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">About Mediverse</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Your trusted partner in healthcare, dedicated to providing exceptional medical services 
+                with compassion, innovation, and excellence.
+            </p>
+        </div>
+
+        <!-- Our Story -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
+                <p class="text-gray-600 mb-4">
+                    Founded in 2010, Mediverse has been at the forefront of healthcare innovation, 
+                    providing comprehensive medical services to our community. What started as a 
+                    small clinic has grown into a multi-specialty hospital network serving thousands 
+                    of patients annually.
+                </p>
+                <p class="text-gray-600 mb-4">
+                    Our commitment to excellence, combined with cutting-edge technology and a 
+                    patient-centered approach, has made us one of the most trusted healthcare 
+                    providers in the region.
+                </p>
+                <p class="text-gray-600">
+                    Today, we continue to expand our services and facilities to meet the evolving 
+                    healthcare needs of our community while maintaining our core values of 
+                    compassion, integrity, and clinical excellence.
+                </p>
+            </div>
+            <div class="flex items-center justify-center">
+                <div class="bg-blue-100 rounded-lg p-8 text-center">
+                    <i class="fas fa-hospital text-blue-600 text-6xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">15+ Years</h3>
+                    <p class="text-gray-600">Of Excellence in Healthcare</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Mission & Vision -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="text-center mb-6">
+                    <i class="fas fa-bullseye text-blue-600 text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Our Mission</h3>
+                <p class="text-gray-600 text-center">
+                    To provide exceptional healthcare services that promote healing, prevent illness, 
+                    and enhance the quality of life for all our patients through compassionate care, 
+                    advanced medical technology, and continuous improvement.
+                </p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="text-center mb-6">
+                    <i class="fas fa-eye text-blue-600 text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Our Vision</h3>
+                <p class="text-gray-600 text-center">
+                    To be the leading healthcare provider in our region, recognized for excellence 
+                    in patient care, medical innovation, and community health improvement, setting 
+                    the standard for healthcare delivery.
+                </p>
+            </div>
+        </div>
+
+        <!-- Core Values -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">Our Core Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heart text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Compassion</h3>
+                    <p class="text-gray-600">
+                        We treat every patient with empathy, kindness, and respect, understanding 
+                        that healing involves both medical treatment and emotional support.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-medal text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Excellence</h3>
+                    <p class="text-gray-600">
+                        We are committed to the highest standards of medical care, continuously 
+                        improving our services and embracing best practices in healthcare.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Integrity</h3>
+                    <p class="text-gray-600">
+                        We conduct our business with honesty, transparency, and ethical practices, 
+                        maintaining the trust that patients place in us.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="bg-blue-600 rounded-lg text-white p-8 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-12">Our Impact</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold mb-2">50,000+</div>
+                    <div class="text-blue-100">Patients Served</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold mb-2">100+</div>
+                    <div class="text-blue-100">Expert Doctors</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold mb-2">15+</div>
+                    <div class="text-blue-100">Specialties</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold mb-2">24/7</div>
+                    <div class="text-blue-100">Emergency Care</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Leadership -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">Leadership Team</h2>
+            <p class="text-gray-600 mb-12 max-w-3xl mx-auto">
+                Our experienced leadership team is dedicated to advancing healthcare excellence 
+                and ensuring the highest quality of patient care across all our facilities.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user-md text-gray-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Dr. Sarah Johnson</h3>
+                    <p class="text-blue-600 font-medium mb-2">Chief Medical Officer</p>
+                    <p class="text-gray-600 text-sm">
+                        Leading cardiology specialist with over 20 years of experience in 
+                        cardiovascular medicine and hospital administration.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user-tie text-gray-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Michael Roberts</h3>
+                    <p class="text-blue-600 font-medium mb-2">Chief Executive Officer</p>
+                    <p class="text-gray-600 text-sm">
+                        Healthcare executive with extensive experience in hospital management 
+                        and strategic healthcare planning.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user-nurse text-gray-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Lisa Anderson</h3>
+                    <p class="text-blue-600 font-medium mb-2">Chief Nursing Officer</p>
+                    <p class="text-gray-600 text-sm">
+                        Dedicated nursing professional with 18 years of experience in patient 
+                        care management and nursing excellence.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">
+                        Your trusted healthcare partner, providing exceptional medical services with compassion and excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Doctors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Emergency Care</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Cardiology</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Neurology</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Pediatrics</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            +1 (555) 123-4567
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-envelope mr-2"></i>
+                            info@mediverse.com
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            123 Healthcare Ave, Medical City
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

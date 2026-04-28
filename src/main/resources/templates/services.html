@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <!-- Logo -->
+                <a href="/" class="navbar-logo">
+                    <i class="fas fa-hospital"></i>
+                    <span class="navbar-brand">Mediverse</span>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/services" class="active">Services</a>
+                    <a href="/doctors">Doctors</a>
+                    <a href="/departments">Departments</a>
+                    <a href="/branches">Branches</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="navbar-actions">
+                    <!-- For Unauthenticated Users -->
+                    <div sec:authorize="!isAuthenticated()" class="auth-section">
+                        <a href="/login" class="login-btn">Login</a>
+                        <a href="/register" class="register-btn">Register</a>
+                    </div>
+                    
+                    <!-- For Authenticated Users -->
+                    <div sec:authorize="isAuthenticated()" class="dashboard-section">
+                        <!-- Role-based Dashboard Links -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="dashboard-btn admin">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Admin Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('DOCTOR')">
+                            <a href="/doctor/dashboard" class="dashboard-btn doctor">
+                                <i class="fas fa-user-md"></i>
+                                Doctor Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/dashboard" class="dashboard-btn patient">
+                                <i class="fas fa-user"></i>
+                                My Dashboard
+                            </a>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name" class="username"></span>
+                            <a href="/logout" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Our Medical Services</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Comprehensive healthcare services delivered by experienced professionals 
+                using state-of-the-art medical technology and evidence-based practices.
+            </p>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            
+            <!-- Emergency Medicine -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-ambulance text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Emergency Medicine</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    24/7 emergency care with rapid response teams and advanced life support systems 
+                    for critical medical situations.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Trauma Care</li>
+                    <li>• Critical Care</li>
+                    <li>• Cardiac Emergency</li>
+                    <li>• Stroke Care</li>
+                </ul>
+            </div>
+
+            <!-- Cardiology -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heartbeat text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Cardiology</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    Comprehensive heart and cardiovascular care with advanced diagnostic 
+                    and treatment options.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Interventional Cardiology</li>
+                    <li>• Cardiac Surgery</li>
+                    <li>• Heart Failure Treatment</li>
+                    <li>• Preventive Cardiology</li>
+                </ul>
+            </div>
+
+            <!-- Neurology -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Neurology</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    Expert care for brain, spine, and nervous system disorders with 
+                    cutting-edge treatment approaches.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Neurosurgery</li>
+                    <li>• Stroke Treatment</li>
+                    <li>• Epilepsy Care</li>
+                    <li>• Movement Disorders</li>
+                </ul>
+            </div>
+
+            <!-- Orthopedics -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bone text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Orthopedics</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    Specialized care for bones, joints, muscles, and sports-related injuries 
+                    with minimally invasive techniques.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Joint Replacement</li>
+                    <li>• Sports Medicine</li>
+                    <li>• Spine Surgery</li>
+                    <li>• Trauma Surgery</li>
+                </ul>
+            </div>
+
+            <!-- Pediatrics -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-yellow-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-baby text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Pediatrics</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    Comprehensive healthcare for children from infancy through adolescence 
+                    in a child-friendly environment.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Pediatric Oncology</li>
+                    <li>• Neonatal Care</li>
+                    <li>• Childhood Vaccines</li>
+                    <li>• Developmental Care</li>
+                </ul>
+            </div>
+
+            <!-- Radiology -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+                <div class="text-center mb-4">
+                    <div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-x-ray text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Radiology</h3>
+                </div>
+                <p class="text-gray-600 text-center mb-4">
+                    Advanced medical imaging and diagnostic services for accurate 
+                    diagnosis and treatment planning.
+                </p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• MRI & CT Scans</li>
+                    <li>• Ultrasound</li>
+                    <li>• Mammography</li>
+                    <li>• Interventional Radiology</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Additional Services -->
+        <div class="bg-blue-600 text-white rounded-lg p-8 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Additional Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <i class="fas fa-flask text-4xl mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Laboratory Services</h3>
+                    <p class="text-blue-100 text-sm">Comprehensive lab testing and diagnostics</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-pills text-4xl mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Pharmacy</h3>
+                    <p class="text-blue-100 text-sm">On-site pharmacy with prescription services</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-procedures text-4xl mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Surgery Center</h3>
+                    <p class="text-blue-100 text-sm">State-of-the-art surgical facilities</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-user-nurse text-4xl mb-4"></i>
+                    <h3 class="text-lg font-semibold mb-2">Home Care</h3>
+                    <p class="text-blue-100 text-sm">Professional home healthcare services</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Need Medical Care?</h2>
+            <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Our experienced medical team is here to provide you with the highest quality 
+                healthcare services. Schedule an appointment today or contact us for more information.
+            </p>
+            <div class="space-x-4">
+                <div sec:authorize="!isAuthenticated()" class="inline-block">
+                    <a href="/login" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Book Appointment
+                    </a>
+                </div>
+                <div sec:authorize="isAuthenticated()" class="inline-block">
+                    <div sec:authorize="hasRole('PATIENT')" class="inline-block">
+                        <a href="/patient/book-appointment" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Book Appointment
+                        </a>
+                    </div>
+                    <div sec:authorize="!hasRole('PATIENT')" class="inline-block">
+                        <span class="bg-gray-400 text-white px-6 py-3 rounded-lg cursor-not-allowed">
+                            Patient Access Required
+                        </span>
+                    </div>
+                </div>
+                <a href="/contact" class="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition duration-300">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">
+                        Your trusted healthcare partner, providing exceptional medical services with compassion and excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Doctors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Emergency</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            Emergency: 911
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-hospital mr-2"></i>
+                            24/7 Emergency Room
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            +1 (555) 123-4567
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-envelope mr-2"></i>
+                            info@mediverse.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

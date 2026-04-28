@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Doctors - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <a href="/logout" class="text-red-600 hover:text-red-700">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                    <li><a href="/admin/dashboard" class="hover:text-blue-600">Dashboard</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li><a href="/admin/departments" class="hover:text-blue-600">Departments</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li><a th:href="@{/admin/departments/{id}/view(id=${department.id})}" class="hover:text-blue-600" th:text="${department.name}">Department</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li class="text-gray-900">Doctors</li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">
+                            <span th:text="${department.name}">Department</span> Doctors
+                        </h1>
+                        <p class="text-gray-600 mt-2">Manage doctors assigned to this department</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a th:href="@{/admin/departments/{id}/view(id=${department.id})}" 
+                           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-eye mr-2"></i>View Department
+                        </a>
+                        <a href="/admin/departments" 
+                           class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Departments
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Summary -->
+            <div class="bg-white rounded-lg shadow p-6 mb-8">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 rounded-full p-4 mr-4">
+                        <i class="fas fa-building text-blue-600 text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-gray-800" th:text="${department.name}">Department Name</h2>
+                        <p class="text-gray-600" th:text="${department.description}">Department description</p>
+                        <div class="flex items-center mt-2 text-sm text-gray-500">
+                            <i class="fas fa-user-md mr-2"></i>
+                            <span>Head: <span th:text="${department.headDoctor}">Dr. Name</span></span>
+                            <span class="mx-4">•</span>
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span th:text="${department.email}">email@domain.com</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"
+                              th:text="${department.isActive ? 'Active' : 'Inactive'}"
+                              th:classappend="${department.isActive} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctors List -->
+            <div class="bg-white rounded-lg shadow">
+                <!-- Table Header -->
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            Department Doctors (<span th:text="${#lists.size(doctors)}">0</span>)
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${doctors.empty}" class="text-center py-12">
+                    <i class="fas fa-user-md text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Doctors Found</h3>
+                    <p class="text-gray-500 mb-6">This department doesn't have any assigned doctors yet.</p>
+                    <a href="/admin/doctors" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        <i class="fas fa-plus mr-2"></i>Add Doctor
+                    </a>
+                </div>
+
+                <!-- Doctors Table -->
+                <div th:if="${!doctors.empty}" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialization</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qualification</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Availability</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:each="doctor : ${doctors}" class="hover:bg-gray-50">
+                                <!-- Doctor Info -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="bg-blue-100 rounded-full p-2 mr-3">
+                                            <i class="fas fa-user-md text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                Dr. <span th:text="${doctor.user.firstName}">John</span> 
+                                                <span th:text="${doctor.user.lastName}">Doe</span>
+                                            </div>
+                                            <div class="text-sm text-gray-500" th:text="${doctor.user.email}">john.doe@email.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Specialization -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" th:text="${doctor.specialization}">Cardiology</div>
+                                </td>
+
+                                <!-- Qualification -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" th:text="${doctor.qualification}">MD, FACC</div>
+                                </td>
+
+                                <!-- Experience -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <span th:text="${doctor.experienceYears}">5</span> years
+                                    </div>
+                                </td>
+
+                                <!-- Availability -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <div th:text="${doctor.availabilityStartTime + ' - ' + doctor.availabilityEndTime}">09:00 - 17:00</div>
+                                        <div class="text-xs text-gray-500" th:text="${doctor.workingDays}">Mon-Fri</div>
+                                    </div>
+                                </td>
+
+                                <!-- Contact -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" th:text="${doctor.user.phoneNumber}">+1-555-1234</div>
+                                </td>
+
+                                <!-- Status -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                          th:text="${doctor.isAvailable ? 'Available' : 'Unavailable'}"
+                                          th:classappend="${doctor.isAvailable} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                        Available
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <a th:href="@{/admin/doctors/{id}/view(id=${doctor.id})}" 
+                                       class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a th:href="@{/admin/doctors/{id}/edit(id=${doctor.id})}" 
+                                       class="text-green-600 hover:text-green-900">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/admin/doctors/{id}/schedule(id=${doctor.id})}" 
+                                       class="text-purple-600 hover:text-purple-900">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div th:if="${!doctors.empty}" class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Total Doctors</h3>
+                            <p class="text-2xl font-bold text-blue-600" th:text="${#lists.size(doctors)}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Available</h3>
+                            <p class="text-2xl font-bold text-green-600" th:text="${#lists.size(doctors.?[isAvailable == true])}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-yellow-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Avg Experience</h3>
+                            <p class="text-2xl font-bold text-yellow-600">
+                                <span th:if="${!doctors.empty}" th:text="${#numbers.formatDecimal(#aggregates.avg(doctors.![experienceYears]), 1, 1)}">0</span>
+                                <span th:if="${doctors.empty}">0</span> yrs
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Specializations</h3>
+                            <p class="text-2xl font-bold text-purple-600" th:text="${#sets.size(#sets.toSet(doctors.![specialization]))}">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ? ${title} + ' - Mediverse' : 'Mediverse - Hospital Management System'">Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gradient">Mediverse</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Home</a>
+                    <a href="/about" class="nav-link text-gray-700 hover:text-blue-600 font-medium">About</a>
+                    <a href="/services" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                    <a href="/doctors" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Doctors</a>
+                    <a href="/departments" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                    <a href="/branches" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Branches</a>
+                    <a href="/contact" class="nav-link text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div sec:authorize="!isAuthenticated()">
+                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
+                        <a href="/register" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">Register</a>
+                    </div>
+                    
+                    <div sec:authorize="isAuthenticated()">
+                        <div class="flex items-center space-x-4">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                                    <i class="fas fa-tachometer-alt mr-1"></i>Admin Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('DOCTOR')">
+                                <a href="/doctor/dashboard" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-user-md mr-1"></i>Doctor Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-user mr-1"></i>My Dashboard
+                                </a>
+                            </div>
+                            <div class="flex items-center space-x-2 ml-4">
+                                <i class="fas fa-user-circle text-xl text-gray-700"></i>
+                                <span sec:authentication="name" class="text-gray-700"></span>
+                                <a href="/logout" class="ml-4 text-red-600 hover:text-red-700">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-gray-700 hover:text-blue-600" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+                <a href="/" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="/about" class="block px-3 py-2 text-gray-700 hover:text-blue-600">About</a>
+                <a href="/services" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Services</a>
+                <a href="/doctors" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Doctors</a>
+                <a href="/departments" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Departments</a>
+                <a href="/branches" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Branches</a>
+                <a href="/contact" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Contact</a>
+                <div sec:authorize="!isAuthenticated()" class="border-t pt-2">
+                    <a href="/login" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Login</a>
+                    <a href="/register" class="block px-3 py-2 text-blue-600 font-medium">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main th:fragment="content">
+        <!-- Content will be inserted here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">Comprehensive healthcare management system providing quality medical services.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Our Doctors</a></li>
+                        <li><a href="/departments" class="text-gray-300 hover:text-white">Departments</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Services</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Emergency Care</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Surgery</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Cardiology</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Neurology</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone text-blue-400"></i>
+                            <span class="text-gray-300">+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope text-blue-400"></i>
+                            <span class="text-gray-300">info@mediverse.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-blue-400"></i>
+                            <span class="text-gray-300">123 Healthcare St, Medical City</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse Hospital Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // User menu toggle
+        document.getElementById('user-menu-button').addEventListener('click', function() {
+            const userMenu = document.getElementById('user-menu');
+            userMenu.classList.toggle('hidden');
+        });
+        
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenu = document.getElementById('user-menu');
+            
+            if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

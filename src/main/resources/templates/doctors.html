@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Doctors - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <!-- Logo -->
+                <a href="/" class="navbar-logo">
+                    <i class="fas fa-hospital"></i>
+                    <span class="navbar-brand">Mediverse</span>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/services">Services</a>
+                    <a href="/doctors" class="active">Doctors</a>
+                    <a href="/departments">Departments</a>
+                    <a href="/branches">Branches</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="navbar-actions">
+                    <!-- For Unauthenticated Users -->
+                    <div sec:authorize="!isAuthenticated()" class="auth-section">
+                        <a href="/login" class="login-btn">Login</a>
+                        <a href="/register" class="register-btn">Register</a>
+                    </div>
+                    
+                    <!-- For Authenticated Users -->
+                    <div sec:authorize="isAuthenticated()" class="dashboard-section">
+                        <!-- Role-based Dashboard Links -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="dashboard-btn admin">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Admin Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('DOCTOR')">
+                            <a href="/doctor/dashboard" class="dashboard-btn doctor">
+                                <i class="fas fa-user-md"></i>
+                                Doctor Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/dashboard" class="dashboard-btn patient">
+                                <i class="fas fa-user"></i>
+                                My Dashboard
+                            </a>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name" class="username"></span>
+                            <a href="/logout" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Our Expert Medical Team</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Meet our experienced healthcare professionals dedicated to providing exceptional 
+                medical care with compassion and expertise.
+            </p>
+        </div>
+
+        <!-- Departments Filter -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Filter by Department</h2>
+            
+            <!-- Search Bar -->
+            <form class="mb-4" method="get" action="/doctors">
+                <div class="flex gap-2">
+                    <input type="text" name="search" th:value="${searchTerm}" 
+                           placeholder="Search doctors by name..." 
+                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
+                        <i class="fas fa-search mr-1"></i>Search
+                    </button>
+                    <a href="/doctors" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300">
+                        Clear
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Department Filter Buttons -->
+            <div class="flex flex-wrap gap-3">
+                <a href="/doctors" 
+                   th:classappend="${selectedDepartmentId == null} ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
+                   class="px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300">
+                    All Doctors
+                </a>
+                <a th:each="department : ${departments}" 
+                   th:href="@{/doctors(departmentId=${department.id})}"
+                   th:text="${department.name}"
+                   th:classappend="${selectedDepartmentId != null and selectedDepartmentId == department.id} ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'"
+                   class="px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300">
+                    Cardiology
+                </a>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="mb-6 flex justify-between items-center">
+            <div>
+                <p class="text-gray-600">
+                    Showing <span class="font-semibold" th:text="${#lists.size(doctors)}">0</span> 
+                    doctor<span th:if="${#lists.size(doctors) != 1}">s</span>
+                    <span th:if="${selectedDepartmentId != null}">
+                        in <span class="font-semibold" th:text="${departments.?[id == __${selectedDepartmentId}__][0]?.name}">Selected Department</span>
+                    </span>
+                    <span th:if="${searchTerm != null and !#strings.isEmpty(searchTerm)}">
+                        for "<span class="font-semibold" th:text="${searchTerm}">search term</span>"
+                    </span>
+                </p>
+            </div>
+            <div th:if="${#lists.isEmpty(doctors)}" class="text-center py-8">
+                <i class="fas fa-user-md text-gray-400 text-4xl mb-4"></i>
+                <p class="text-gray-500 text-lg">No doctors found matching your criteria.</p>
+                <a href="/doctors" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    View All Doctors
+                </a>
+            </div>
+        </div>
+
+        <!-- Doctors Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" th:unless="${#lists.isEmpty(doctors)}">
+            
+            <!-- Doctor Card -->
+            <div th:each="doctor : ${doctors}" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <div class="p-6">
+                    <!-- Doctor Avatar -->
+                    <div class="text-center mb-4">
+                        <div class="w-24 h-24 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
+                            <i class="fas fa-user-md text-blue-600 text-3xl"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Doctor Info -->
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1">
+                            Dr. <span th:text="${doctor.user.firstName + ' ' + doctor.user.lastName}">John Doe</span>
+                        </h3>
+                        <p class="text-blue-600 font-medium mb-2" th:text="${doctor.specialization}">Cardiologist</p>
+                        <p class="text-gray-600 text-sm mb-3" th:text="${doctor.department.name}">Department of Cardiology</p>
+                        
+                        <!-- Qualifications -->
+                        <div class="mb-3">
+                            <span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full" 
+                                  th:text="${doctor.qualification}">MD, FACC</span>
+                        </div>
+                        
+                        <!-- Experience -->
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span th:text="${doctor.experienceYears}">15</span> years experience
+                            </p>
+                        </div>
+                        
+                        <!-- Consultation Fee -->
+                        <div class="mb-4">
+                            <p class="text-lg font-semibold text-green-600">
+                                $<span th:text="${doctor.consultationFee}">200</span>
+                                <span class="text-sm text-gray-500">/ consultation</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Working Days -->
+                        <div class="mb-4">
+                            <p class="text-xs text-gray-500">
+                                Available: <span th:text="${doctor.workingDays}">Mon-Fri</span>
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                <span th:text="${#temporals.format(doctor.availabilityStartTime, 'h:mm a')}">9:00 AM</span> - 
+                                <span th:text="${#temporals.format(doctor.availabilityEndTime, 'h:mm a')}">5:00 PM</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Bio -->
+                        <div class="mb-4" th:if="${doctor.bio}">
+                            <p class="text-sm text-gray-600 line-clamp-3" th:text="${doctor.bio}">
+                                Experienced cardiologist specializing in interventional procedures...
+                            </p>
+                        </div>
+                        
+                        <!-- Contact Info -->
+                        <div class="border-t pt-4">
+                            <p class="text-sm text-gray-600 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>
+                                <span th:text="${doctor.user.email}">doctor@mediverse.com</span>
+                            </p>
+                            <p class="text-sm text-gray-600 mb-4">
+                                <i class="fas fa-phone mr-2"></i>
+                                <span th:text="${doctor.user.phoneNumber}">+1 (555) 123-4567</span>
+                            </p>
+                            
+                            <!-- Action Button -->
+                            <div sec:authorize="!isAuthenticated()">
+                                <a href="/login" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center block">
+                                    Book Appointment
+                                </a>
+                            </div>
+                            <div sec:authorize="isAuthenticated()">
+                                <div sec:authorize="hasRole('PATIENT')">
+                                    <a href="/patient/book-appointment" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center block">
+                                        Book Appointment
+                                    </a>
+                                </div>
+                                <div sec:authorize="!hasRole('PATIENT')">
+                                    <a href="/login" class="w-full bg-gray-400 text-white py-2 px-4 rounded-lg cursor-not-allowed transition duration-300 text-center block">
+                                        Patient Access Required
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- No Doctors Message -->
+        <div th:if="${#lists.isEmpty(doctors)}" class="text-center py-12">
+            <i class="fas fa-user-md text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No Doctors Available</h3>
+            <p class="text-gray-500">Please check back later or contact us for more information.</p>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-16 bg-blue-600 text-white rounded-lg p-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Need Medical Care?</h2>
+            <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
+                Our experienced medical team is ready to provide you with the highest quality healthcare. 
+                Schedule an appointment today or contact us for more information.
+            </p>
+            <div class="space-x-4">
+                <div sec:authorize="!isAuthenticated()" class="inline-block">
+                    <a href="/login" class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-300 font-medium">
+                        Book Appointment
+                    </a>
+                </div>
+                <div sec:authorize="isAuthenticated()" class="inline-block">
+                    <div sec:authorize="hasRole('PATIENT')" class="inline-block">
+                        <a href="/patient/book-appointment" class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition duration-300 font-medium">
+                            Book Appointment
+                        </a>
+                    </div>
+                    <div sec:authorize="!hasRole('PATIENT')" class="inline-block">
+                        <span class="bg-gray-300 text-gray-600 px-6 py-3 rounded-lg cursor-not-allowed font-medium">
+                            Patient Access Required
+                        </span>
+                    </div>
+                </div>
+                <a href="/contact" class="border border-white text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-medium">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">
+                        Your trusted healthcare partner, providing exceptional medical services with compassion and excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Doctors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Departments</h3>
+                    <ul class="space-y-2">
+                        <li th:each="department : ${#lists.size(departments) > 4 ? departments.subList(0, 4) : departments}">
+                            <a href="/departments" class="text-gray-300 hover:text-white" th:text="${department.name}">Cardiology</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            +1 (555) 123-4567
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-envelope mr-2"></i>
+                            info@mediverse.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

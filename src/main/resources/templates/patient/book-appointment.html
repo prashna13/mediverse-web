@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium">About</a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                    <a href="/doctors" class="text-gray-700 hover:text-blue-600 font-medium">Doctors</a>
+                    <a href="/departments" class="text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                    <a href="/branches" class="text-gray-700 hover:text-blue-600 font-medium">Branches</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div sec:authorize="isAuthenticated()">
+                        <div class="flex items-center space-x-4">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                                    <i class="fas fa-tachometer-alt mr-1"></i>Admin Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('DOCTOR')">
+                                <a href="/doctor/dashboard" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-user-md mr-1"></i>Doctor Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-user mr-1"></i>My Dashboard
+                                </a>
+                            </div>
+                            <div class="flex items-center space-x-2 ml-4">
+                                <i class="fas fa-user-circle text-xl text-gray-700"></i>
+                                <span sec:authentication="name" class="text-gray-700"></span>
+                                <a href="/logout" class="ml-4 text-red-600 hover:text-red-700">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/patient/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/patient/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-check mr-3"></i>My Appointments
+                </a>
+                <a href="/patient/book-appointment" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-plus-circle mr-3"></i>Book Appointment
+                </a>
+                <a href="/patient/profile" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user mr-3"></i>My Profile
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Book an Appointment</h1>
+                <p class="text-gray-600">Schedule a new medical appointment with our healthcare professionals</p>
+            </div>
+
+            <!-- Appointment Form -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">Appointment Details</h2>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Success/Error Messages -->
+                    <div th:if="${successMessage}" class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                    
+                    <div th:if="${errorMessage}" class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <form th:action="@{/patient/book-appointment}" th:object="${appointmentBooking}" method="post" class="space-y-6">
+                        
+                        <!-- Department Selection -->
+                        <div>
+                            <label for="departmentId" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-building mr-2"></i>Department
+                            </label>
+                            <select th:field="*{departmentId}" id="departmentId" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select a department</option>
+                                <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('departmentId')}" class="mt-1 text-sm text-red-600">
+                                <span th:errors="*{departmentId}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Selection -->
+                        <div>
+                            <label for="doctorId" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user-md mr-2"></i>Doctor
+                            </label>
+                            <select th:field="*{doctorId}" id="doctorId" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select a doctor</option>
+                                <option th:each="doc : ${doctors}" th:value="${doc.id}" 
+                                        th:text="${doc.user.firstName + ' ' + doc.user.lastName + ' - ' + doc.specialization}"></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('doctorId')}" class="mt-1 text-sm text-red-600">
+                                <span th:errors="*{doctorId}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Date and Time Selection -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="appointmentDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar mr-2"></i>Appointment Date
+                                </label>
+                                <input type="date" th:field="*{appointmentDate}" id="appointmentDate" required
+                                       th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <div th:if="${#fields.hasErrors('appointmentDate')}" class="mt-1 text-sm text-red-600">
+                                    <span th:errors="*{appointmentDate}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="appointmentTime" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-clock mr-2"></i>Appointment Time
+                                </label>
+                                <select th:field="*{appointmentTime}" id="appointmentTime" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Select time</option>
+                                    <!-- Time slots will be populated dynamically -->
+                                </select>
+                                <div th:if="${#fields.hasErrors('appointmentTime')}" class="mt-1 text-sm text-red-600">
+                                    <span th:errors="*{appointmentTime}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reason for Visit -->
+                        <div>
+                            <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-comment-medical mr-2"></i>Reason for Visit
+                            </label>
+                            <input type="text" th:field="*{reason}" id="reason" required maxlength="255"
+                                   placeholder="Brief description of your medical concern"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <div th:if="${#fields.hasErrors('reason')}" class="mt-1 text-sm text-red-600">
+                                <span th:errors="*{reason}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Additional Notes -->
+                        <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-sticky-note mr-2"></i>Additional Notes (Optional)
+                            </label>
+                            <textarea th:field="*{notes}" id="notes" rows="3" maxlength="500"
+                                      placeholder="Any additional information you'd like to share"
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            <div th:if="${#fields.hasErrors('notes')}" class="mt-1 text-sm text-red-600">
+                                <span th:errors="*{notes}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex space-x-4">
+                            <button type="submit" 
+                                    class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center">
+                                <i class="fas fa-calendar-check mr-2"></i>Book Appointment
+                            </button>
+                            <a href="/patient/appointments" 
+                               class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition duration-300 flex items-center">
+                                <i class="fas fa-arrow-left mr-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript for dynamic interactions -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const departmentSelect = document.getElementById('departmentId');
+            const doctorSelect = document.getElementById('doctorId');
+            const dateInput = document.getElementById('appointmentDate');
+            const timeSelect = document.getElementById('appointmentTime');
+
+            // Filter doctors by department
+            departmentSelect.addEventListener('change', function() {
+                const departmentId = this.value;
+                
+                // Clear doctor selection
+                doctorSelect.innerHTML = '<option value="">Select a doctor</option>';
+                timeSelect.innerHTML = '<option value="">Select time</option>';
+                
+                if (departmentId) {
+                    fetch(`/patient/api/doctors/${departmentId}`)
+                        .then(response => response.json())
+                        .then(doctors => {
+                            doctors.forEach(doctor => {
+                                const option = document.createElement('option');
+                                option.value = doctor.id;
+                                option.textContent = `${doctor.user.firstName} ${doctor.user.lastName} - ${doctor.specialization}`;
+                                doctorSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching doctors:', error);
+                        });
+                }
+            });
+
+            // Load available time slots when doctor and date are selected
+            function loadTimeSlots() {
+                const doctorId = doctorSelect.value;
+                const selectedDate = dateInput.value;
+                
+                if (doctorId && selectedDate) {
+                    fetch(`/patient/api/doctors/${doctorId}/slots?date=${selectedDate}`)
+                        .then(response => response.json())
+                        .then(slots => {
+                            timeSelect.innerHTML = '<option value="">Select time</option>';
+                            slots.forEach(slot => {
+                                const option = document.createElement('option');
+                                option.value = slot;
+                                option.textContent = slot;
+                                timeSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching time slots:', error);
+                            timeSelect.innerHTML = '<option value="">No slots available</option>';
+                        });
+                } else {
+                    timeSelect.innerHTML = '<option value="">Select time</option>';
+                }
+            }
+
+            doctorSelect.addEventListener('change', loadTimeSlots);
+            dateInput.addEventListener('change', loadTimeSlots);
+        });
+    </script>
+</body>
+</html>

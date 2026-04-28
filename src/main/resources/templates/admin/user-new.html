@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User - Mediverse Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+
+<!-- Header -->
+<header class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a href="/" class="flex items-center space-x-2">
+                    <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                </a>
+                <span class="ml-8 text-gray-600">Admin Dashboard</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                <a href="/logout" class="text-red-600 hover:text-red-700">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="max-w-4xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-lg shadow-lg">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900">
+                    <i class="fas fa-user-plus mr-2 text-blue-600"></i>Add New User
+                </h1>
+                <a href="/admin/users" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                    <i class="fas fa-arrow-left mr-1"></i>Back to Users
+                </a>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <!-- Error/Success Messages -->
+            <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}"></span>
+            </div>
+
+            <!-- Create Form -->
+            <form th:action="@{/admin/users/new}" th:object="${user}" method="post" class="space-y-6">
+                <!-- CSRF Token -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- First Name -->
+                    <div>
+                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-1"></i>First Name
+                        </label>
+                        <input type="text" id="firstName" th:field="*{firstName}" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter first name">
+                        <div th:if="${#fields.hasErrors('firstName')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{firstName}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-1"></i>Last Name
+                        </label>
+                        <input type="text" id="lastName" th:field="*{lastName}" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter last name">
+                        <div th:if="${#fields.hasErrors('lastName')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{lastName}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-1"></i>Email
+                        </label>
+                        <input type="email" id="email" th:field="*{email}" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter email address">
+                        <div th:if="${#fields.hasErrors('email')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{email}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div>
+                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-phone mr-1"></i>Phone Number
+                        </label>
+                        <input type="tel" id="phoneNumber" th:field="*{phoneNumber}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter phone number">
+                        <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{phoneNumber}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-1"></i>Password
+                        </label>
+                        <input type="password" id="password" th:field="*{password}" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Enter password (minimum 6 characters)">
+                        <div th:if="${#fields.hasErrors('password')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{password}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Role -->
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user-tag mr-1"></i>Role
+                        </label>
+                        <select id="role" th:field="*{role}" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select a role</option>
+                            <option th:each="role : ${roles}" 
+                                    th:value="${role.name()}" 
+                                    th:text="${role.displayName}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('role')}" class="text-red-500 text-sm mt-1">
+                            <span th:errors="*{role}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Department (only for doctors) -->
+                    <div id="departmentField" class="hidden">
+                        <label for="departmentId" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-building mr-1"></i>Department
+                        </label>
+                        <select id="departmentId" name="departmentId"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select a department</option>
+                            <option th:each="dept : ${departments}" 
+                                    th:value="${dept.id}" 
+                                    th:text="${dept.name}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Active Status -->
+                <div class="border-t border-gray-200 pt-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="isActive" th:field="*{isActive}" checked
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="isActive" class="ml-2 block text-sm text-gray-900">
+                            <i class="fas fa-toggle-on mr-1 text-green-500"></i>Active user (can login)
+                        </label>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">Inactive users cannot log in to the system</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                    <a href="/admin/users" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200">
+                        <i class="fas fa-times mr-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        <i class="fas fa-save mr-1"></i>Create User
+                    </button>
+                </div>
+            </form>
+
+            <!-- JavaScript to show/hide department field -->
+            <script th:inline="javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    const roleSelect = document.getElementById('role');
+                    const departmentField = document.getElementById('departmentField');
+                    
+                    function toggleDepartmentField() {
+                        if (roleSelect.value === 'DOCTOR') {
+                            departmentField.classList.remove('hidden');
+                        } else {
+                            departmentField.classList.add('hidden');
+                        }
+                    }
+                    
+                    // Initial check
+                    toggleDepartmentField();
+                    
+                    // Add event listener for role change
+                    roleSelect.addEventListener('change', toggleDepartmentField);
+                });
+            </script>
+
+            <!-- Additional Information -->
+            <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+                <h3 class="text-sm font-medium text-blue-800 mb-2">
+                    <i class="fas fa-info-circle mr-1"></i>User Creation Guidelines
+                </h3>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• Password must be at least 6 characters long</li>
+                    <li>• Email addresses must be unique in the system</li>
+                    <li>• PATIENT role users will automatically get a patient profile created</li>
+                    <li>• DOCTOR role users need to be assigned to departments separately</li>
+                    <li>• ADMIN role users have full system access</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

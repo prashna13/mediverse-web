@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium">About</a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                    <a href="/doctors" class="text-gray-700 hover:text-blue-600 font-medium">Doctors</a>
+                    <a href="/departments" class="text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                    <a href="/branches" class="text-gray-700 hover:text-blue-600 font-medium">Branches</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div sec:authorize="isAuthenticated()">
+                        <div class="flex items-center space-x-4">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                                    <i class="fas fa-tachometer-alt mr-1"></i>Admin Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('DOCTOR')">
+                                <a href="/doctor/dashboard" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-user-md mr-1"></i>Doctor Dashboard
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-user mr-1"></i>My Dashboard
+                                </a>
+                            </div>
+                            <div class="flex items-center space-x-2 ml-4">
+                                <i class="fas fa-user-circle text-xl text-gray-700"></i>
+                                <span sec:authentication="name" class="text-gray-700"></span>
+                                <a href="/logout" class="ml-4 text-red-600 hover:text-red-700">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/patient/dashboard" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/patient/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-check mr-3"></i>My Appointments
+                </a>
+                <a href="/patient/book-appointment" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-plus-circle mr-3"></i>Book Appointment
+                </a>
+                <a href="/patient/profile" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user mr-3"></i>My Profile
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Appointments -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 mr-4">
+                            <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700">Total Appointments</h3>
+                            <p class="text-2xl font-bold text-blue-600" th:text="${totalAppointments}">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Appointments -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 mr-4">
+                            <i class="fas fa-clock text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700">Upcoming</h3>
+                            <p class="text-2xl font-bold text-green-600" th:text="${#lists.size(appointments.?[status.name() == 'SCHEDULED'])}">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Completed Appointments -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 mr-4">
+                            <i class="fas fa-check-circle text-yellow-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700">Completed</h3>
+                            <p class="text-2xl font-bold text-yellow-600" th:text="${#lists.size(appointments.?[status.name() == 'COMPLETED'])}">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Appointments -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-800">Recent Appointments</h2>
+                        <a href="/patient/appointments" class="text-blue-600 hover:text-blue-700 text-sm">View All</a>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:if="${#lists.isEmpty(appointments)}">
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    <i class="fas fa-calendar-times text-4xl text-gray-300 mb-2"></i>
+                                    <p>No appointments found.</p>
+                                    <a href="/patient/book-appointment" class="text-blue-600 hover:text-blue-700 mt-2 inline-block">Book your first appointment</a>
+                                </td>
+                            </tr>
+                            <tr th:each="appointment, appointmentStat : ${appointments}" th:if="${appointmentStat.index < 5}" class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium text-gray-900" th:text="${appointment.appointmentId}">APT001</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-user-md text-blue-600"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900" th:text="'Dr. ' + ${appointment.doctor.user.firstName} + ' ' + ${appointment.doctor.user.lastName}">Dr. John Doe</div>
+                                            <div class="text-sm text-gray-500" th:text="${appointment.doctor.specialization}">Cardiologist</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm text-gray-900" th:text="${appointment.doctor.department.name}">Cardiology</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" th:text="${#temporals.format(appointment.appointmentDateTime, 'MMM dd, yyyy')}">Jan 15, 2024</div>
+                                    <div class="text-sm text-gray-500" th:text="${#temporals.format(appointment.appointmentDateTime, 'hh:mm a')}">10:00 AM</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800"
+                                          th:if="${appointment.status.name() == 'SCHEDULED'}"
+                                          th:text="${appointment.status.name()}">Scheduled</span>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800"
+                                          th:if="${appointment.status.name() == 'COMPLETED'}"
+                                          th:text="${appointment.status.name()}">Completed</span>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"
+                                          th:if="${appointment.status.name() == 'CANCELLED'}"
+                                          th:text="${appointment.status.name()}">Cancelled</span>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+                                          th:unless="${appointment.status.name() == 'SCHEDULED' || appointment.status.name() == 'COMPLETED' || appointment.status.name() == 'CANCELLED'}"
+                                          th:text="${appointment.status.name()}">Status</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

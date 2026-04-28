@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Locations - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <!-- Logo -->
+                <a href="/" class="navbar-logo">
+                    <i class="fas fa-hospital"></i>
+                    <span class="navbar-brand">Mediverse</span>
+                </a>
+                
+                <!-- Navigation Links -->
+                <div class="navbar-nav">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/services">Services</a>
+                    <a href="/doctors">Doctors</a>
+                    <a href="/departments">Departments</a>
+                    <a href="/branches" class="active">Branches</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="navbar-actions">
+                    <!-- For Unauthenticated Users -->
+                    <div sec:authorize="!isAuthenticated()" class="auth-section">
+                        <a href="/login" class="login-btn">Login</a>
+                        <a href="/register" class="register-btn">Register</a>
+                    </div>
+                    
+                    <!-- For Authenticated Users -->
+                    <div sec:authorize="isAuthenticated()" class="dashboard-section">
+                        <!-- Role-based Dashboard Links -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a href="/admin/dashboard" class="dashboard-btn admin">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Admin Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('DOCTOR')">
+                            <a href="/doctor/dashboard" class="dashboard-btn doctor">
+                                <i class="fas fa-user-md"></i>
+                                Doctor Dashboard
+                            </a>
+                        </div>
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/dashboard" class="dashboard-btn patient">
+                                <i class="fas fa-user"></i>
+                                My Dashboard
+                            </a>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span sec:authentication="name" class="username"></span>
+                            <a href="/logout" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Our Locations</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Mediverse operates multiple locations to serve our community better. 
+                Find the location nearest to you and discover our comprehensive healthcare services.
+            </p>
+        </div>
+
+        <!-- Locations Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            
+            <!-- Branch Card -->
+            <div th:each="branch : ${branches}" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <div class="p-8">
+                    <!-- Branch Header -->
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 rounded-full p-3 mr-4">
+                            <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800" th:text="${branch.name}">Mediverse Downtown</h3>
+                            <p class="text-blue-600 font-medium">Main Campus</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>Address
+                        </h4>
+                        <p class="text-gray-600" th:text="${branch.address}">
+                            123 Main St, Downtown City, ST 12345
+                        </p>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-phone text-blue-600 mr-2"></i>Contact Information
+                        </h4>
+                        <div class="space-y-2">
+                            <p class="text-gray-600">
+                                <strong>Phone:</strong> <span th:text="${branch.phoneNumber}">+1 (555) 1000</span>
+                            </p>
+                            <p class="text-gray-600">
+                                <strong>Email:</strong> <span th:text="${branch.email}">downtown@mediverse.com</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Operating Hours -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-clock text-blue-600 mr-2"></i>Operating Hours
+                        </h4>
+                        <p class="text-gray-600" th:text="${branch.operatingHours}">
+                            24/7
+                        </p>
+                    </div>
+                    
+                    <!-- Services Available -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-stethoscope text-blue-600 mr-2"></i>Services Available
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                            <div th:switch="${branch.name}">
+                                <div th:case="'Mediverse Downtown'">
+                                    <p>• Emergency Care (24/7)</p>
+                                    <p>• All Specialties</p>
+                                    <p>• Surgery Center</p>
+                                    <p>• Laboratory</p>
+                                    <p>• Radiology</p>
+                                    <p>• Pharmacy</p>
+                                    <p>• ICU</p>
+                                    <p>• Maternity Ward</p>
+                                </div>
+                                <div th:case="'Mediverse Uptown'">
+                                    <p>• Outpatient Services</p>
+                                    <p>• Specialist Clinics</p>
+                                    <p>• Laboratory</p>
+                                    <p>• Radiology</p>
+                                    <p>• Physical Therapy</p>
+                                    <p>• Pharmacy</p>
+                                    <p>• Minor Surgery</p>
+                                    <p>• Health Checkups</p>
+                                </div>
+                                <div th:case="'Mediverse Suburbs'">
+                                    <p>• Family Medicine</p>
+                                    <p>• Pediatrics</p>
+                                    <p>• Internal Medicine</p>
+                                    <p>• Urgent Care</p>
+                                    <p>• Laboratory</p>
+                                    <p>• Basic Radiology</p>
+                                    <p>• Vaccines</p>
+                                    <p>• Health Screenings</p>
+                                </div>
+                                <div th:case="*">
+                                    <p>• General Medicine</p>
+                                    <p>• Specialist Care</p>
+                                    <p>• Laboratory</p>
+                                    <p>• Radiology</p>
+                                    <p>• Pharmacy</p>
+                                    <p>• Emergency Care</p>
+                                    <p>• Outpatient Services</p>
+                                    <p>• Health Checkups</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Special Features -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-star text-blue-600 mr-2"></i>Special Features
+                        </h4>
+                        <div class="space-y-1 text-sm text-gray-600">
+                            <div th:switch="${branch.name}">
+                                <div th:case="'Mediverse Downtown'">
+                                    <p>• Level 1 Trauma Center</p>
+                                    <p>• Helicopter Landing Pad</p>
+                                    <p>• Advanced Cardiac Care</p>
+                                    <p>• Neonatal ICU</p>
+                                </div>
+                                <div th:case="'Mediverse Uptown'">
+                                    <p>• Same-day Appointments</p>
+                                    <p>• Walk-in Clinic</p>
+                                    <p>• Extended Hours</p>
+                                    <p>• Parking Available</p>
+                                </div>
+                                <div th:case="'Mediverse Suburbs'">
+                                    <p>• Family-friendly Environment</p>
+                                    <p>• Pediatric Play Area</p>
+                                    <p>• Free Parking</p>
+                                    <p>• Community Health Programs</p>
+                                </div>
+                                <div th:case="*">
+                                    <p>• Quality Healthcare</p>
+                                    <p>• Experienced Staff</p>
+                                    <p>• Modern Facilities</p>
+                                    <p>• Patient-centered Care</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3">
+                        <a href="/contact" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center font-medium">
+                            Get Directions
+                        </a>
+                        <div sec:authorize="!isAuthenticated()" class="flex-1">
+                            <a href="/login" class="w-full border border-blue-600 text-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition duration-300 text-center font-medium block">
+                                Book Appointment
+                            </a>
+                        </div>
+                        <div sec:authorize="isAuthenticated()" class="flex-1">
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/book-appointment" class="w-full border border-blue-600 text-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 transition duration-300 text-center font-medium block">
+                                    Book Appointment
+                                </a>
+                            </div>
+                            <div sec:authorize="!hasRole('PATIENT')">
+                                <span class="w-full border border-gray-400 text-gray-500 py-3 px-4 rounded-lg cursor-not-allowed text-center font-medium block">
+                                    Patient Access Required
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- No Branches Message -->
+        <div th:if="${#lists.isEmpty(branches)}" class="text-center py-12">
+            <i class="fas fa-hospital text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No Locations Available</h3>
+            <p class="text-gray-500">Please check back later or contact us for more information.</p>
+        </div>
+
+        <!-- Emergency Information -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-8 mb-16">
+            <div class="text-center">
+                <div class="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-ambulance text-red-600 text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Emergency Services</h2>
+                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+                    In case of a medical emergency, call 911 immediately. Our Downtown location 
+                    provides 24/7 emergency services with trauma care capabilities.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-red-600">911</div>
+                        <p class="text-sm text-gray-600">Life-threatening emergencies</p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-blue-600">+1 (555) 1000</div>
+                        <p class="text-sm text-gray-600">Downtown Emergency</p>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600">24/7</div>
+                        <p class="text-sm text-gray-600">Always Available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-16">
+            <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Find Us</h2>
+            <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+                <div class="text-center text-gray-500">
+                    <i class="fas fa-map text-4xl mb-4"></i>
+                    <p class="text-lg">Interactive Map Coming Soon</p>
+                    <p class="text-sm">Use the contact information above for directions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="bg-blue-600 text-white rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-center mb-8">Quick Access</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <i class="fas fa-calendar-check text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Book Appointment</h3>
+                    <p class="text-blue-100 mb-4">Schedule your visit</p>
+                    <div sec:authorize="!isAuthenticated()">
+                        <a href="/login" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                            Book Now
+                        </a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <div sec:authorize="hasRole('PATIENT')">
+                            <a href="/patient/book-appointment" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                                Book Now
+                            </a>
+                        </div>
+                        <div sec:authorize="!hasRole('PATIENT')">
+                            <span class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed">
+                                Patient Access Required
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <i class="fas fa-user-md text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Find Doctor</h3>
+                    <p class="text-blue-100 mb-4">Browse specialists</p>
+                    <a href="/doctors" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        View Doctors
+                    </a>
+                </div>
+                <div>
+                    <i class="fas fa-phone text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Contact Us</h3>
+                    <p class="text-blue-100 mb-4">Get information</p>
+                    <a href="/contact" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        Contact
+                    </a>
+                </div>
+                <div>
+                    <i class="fas fa-ambulance text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Emergency</h3>
+                    <p class="text-blue-100 mb-4">24/7 emergency care</p>
+                    <a href="tel:911" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300">
+                        Call 911
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hospital text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold">Mediverse</span>
+                    </div>
+                    <p class="text-gray-300">
+                        Your trusted healthcare partner, providing exceptional medical services with compassion and excellence.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="/about" class="text-gray-300 hover:text-white">About Us</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white">Services</a></li>
+                        <li><a href="/doctors" class="text-gray-300 hover:text-white">Doctors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Our Locations</h3>
+                    <ul class="space-y-2">
+                        <li th:each="branch : ${#lists.size(branches) > 3 ? branches.subList(0, 3) : branches}">
+                            <span class="text-gray-300" th:text="${branch.name}">Mediverse Downtown</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Emergency</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            Emergency: 911
+                        </p>
+                        <p class="text-gray-300">
+                            <i class="fas fa-hospital mr-2"></i>
+                            24/7 Emergency Room
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2025 Mediverse. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

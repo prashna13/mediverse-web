@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout Fragment</title>
+</head>
+<body>
+
+<!-- Logout Form Fragment -->
+<div th:fragment="logout-form">
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="text-red-600 hover:text-red-700 bg-transparent border-none cursor-pointer">
+            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+        </button>
+    </form>
+</div>
+
+<!-- Logout Button Fragment with custom classes -->
+<div th:fragment="logout-button(btnClass)">
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" th:class="${btnClass}">
+            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+        </button>
+    </form>
+</div>
+
+<!-- Logout Link Fragment with default styling -->
+<div th:fragment="logout-link">
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="ml-4 text-red-600 hover:text-red-700 bg-transparent border-none cursor-pointer">
+            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+        </button>
+    </form>
+</div>
+
+<!-- Logout Button for public pages -->
+<div th:fragment="logout-btn">
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="logout-btn">
+            <i class="fas fa-sign-out-alt mr-2"></i>
+            Logout
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

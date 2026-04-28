@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Mediverse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-heartbeat text-blue-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-gray-800">Mediverse</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium">About</a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 font-medium">Services</a>
+                    <a href="/doctors" class="text-gray-700 hover:text-blue-600 font-medium">Doctors</a>
+                    <a href="/departments" class="text-gray-700 hover:text-blue-600 font-medium">Departments</a>
+                    <a href="/branches" class="text-gray-700 hover:text-blue-600 font-medium">Branches</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                    
+                    <div sec:authorize="isAuthenticated()" class="flex items-center space-x-2">
+                        <div class="flex space-x-2">
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                                    <i class="fas fa-cog mr-2"></i>Admin
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('DOCTOR')">
+                                <a href="/doctor/dashboard" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                                    <i class="fas fa-user-md mr-2"></i>Doctor
+                                </a>
+                            </div>
+                            <div sec:authorize="hasRole('PATIENT')">
+                                <a href="/patient/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-user mr-2"></i>Patient
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-600">Welcome, <span th:text="${user.firstName}">Doctor</span></span>
+                            <div class="relative">
+                                <a href="/logout" class="ml-4 text-red-600 hover:text-red-700">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-lg min-h-screen">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Doctor Panel</h3>
+                <a href="/doctor/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                </a>
+                <a href="/doctor/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i> Appointments
+                </a>
+                <a href="/doctor/schedule" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-clock mr-3"></i> Schedule
+                </a>
+                <a href="/doctor/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i> Patients
+                </a>
+                <a href="/doctor/profile" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-user mr-3"></i> Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-4xl mx-auto">
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800">My Profile</h1>
+                    <p class="text-gray-600 mt-2">Manage your personal and professional information</p>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Profile Card -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="text-center">
+                                <div class="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-user-md text-3xl text-green-600"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800" th:text="${'Dr. ' + user.firstName + ' ' + user.lastName}">Dr. John Smith</h3>
+                                <p class="text-gray-600" th:text="${doctor.specialization ?: 'Medical Doctor'}">Medical Doctor</p>
+                                <p class="text-sm text-green-600 mt-2">
+                                    <i class="fas fa-circle text-xs mr-1"></i> Online
+                                </p>
+                            </div>
+                            
+                            <div class="mt-6 space-y-4">
+                                <div class="text-center">
+                                    <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                                        <i class="fas fa-edit mr-2"></i> Edit Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Details -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-lg shadow">
+                            <!-- Personal Information -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Personal Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${user.firstName}">John</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${user.lastName}">Smith</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${user.email}">john.smith@mediverse.com</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${user.phoneNumber ?: 'Not provided'}">+1 234 567 890</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                                Doctor
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Professional Information -->
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Professional Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${doctor.specialization ?: 'Not specified'}">General Medicine</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">License Number</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${doctor.licenseNumber ?: 'Not provided'}">MD123456</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${doctor.experienceYears ?: 'Not specified'} + ' years'">15 years</div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                        <div class="p-3 bg-gray-50 rounded-lg text-gray-800" th:text="${doctor.department?.name ?: 'Not assigned'}">Internal Medicine</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Account Settings -->
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Account Settings</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <h4 class="font-medium text-gray-800">Change Password</h4>
+                                            <p class="text-sm text-gray-600">Update your account password</p>
+                                        </div>
+                                        <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300">
+                                            Change
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <h4 class="font-medium text-gray-800">Two-Factor Authentication</h4>
+                                            <p class="text-sm text-gray-600">Add an extra layer of security</p>
+                                        </div>
+                                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                                            Enable
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mt-8 bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="/doctor/appointments" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-calendar-alt mr-2"></i> View Appointments
+                        </a>
+                        <a href="/doctor/schedule" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-300">
+                            <i class="fas fa-clock mr-2"></i> Manage Schedule
+                        </a>
+                        <a href="/doctor/patients" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition duration-300">
+                            <i class="fas fa-users mr-2"></i> View Patients
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

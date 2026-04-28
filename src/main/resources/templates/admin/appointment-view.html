@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Details - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <div th:replace="~{fragments/logout :: logout-link}"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Appointment Details</h1>
+                        <p class="text-gray-600 mt-2">View appointment information</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="/admin/appointments" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Appointments
+                        </a>
+                        <a th:href="@{/admin/appointments/{id}/edit(id=${appointment.id})}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-edit mr-2"></i>Edit Appointment
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Appointment Details -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <!-- Header -->
+                <div class="bg-blue-50 px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            Appointment ID: <span th:text="${appointment.appointmentId}" class="text-blue-600">APP001</span>
+                        </h2>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"
+                              th:text="${appointment.status.displayName}"
+                              th:classappend="${appointment.status.name() == 'SCHEDULED'} ? 'bg-yellow-100 text-yellow-800' : 
+                                             (${appointment.status.name() == 'CONFIRMED'} ? 'bg-blue-100 text-blue-800' : 
+                                             (${appointment.status.name() == 'COMPLETED'} ? 'bg-green-100 text-green-800' : 
+                                             (${appointment.status.name() == 'CANCELLED'} ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')))">
+                            Scheduled
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Patient Information -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-user-injured text-blue-600 mr-2"></i>Patient Information
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Patient Name</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.user.firstName + ' ' + appointment.patient.user.lastName}">John Doe</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Patient ID</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.patientId}">PAT001</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.user.email}">john@example.com</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Phone</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.user.phoneNumber ?: 'N/A'}">+1 234 567 8900</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Age</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.dateOfBirth != null ? #temporals.year(#temporals.now()) - #temporals.year(appointment.patient.dateOfBirth) : 'N/A'}">25</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Blood Group</label>
+                                    <p class="text-gray-900" th:text="${appointment.patient.bloodGroup ?: 'N/A'}">O+</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Information -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-user-md text-green-600 mr-2"></i>Doctor Information
+                            </h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Doctor Name</label>
+                                    <p class="text-gray-900" th:text="${'Dr. ' + appointment.doctor.user.firstName + ' ' + appointment.doctor.user.lastName}">Dr. Sarah Johnson</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Doctor ID</label>
+                                    <p class="text-gray-900" th:text="${appointment.doctor.doctorId}">DOC001</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Specialization</label>
+                                    <p class="text-gray-900" th:text="${appointment.doctor.specialization}">Cardiology</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Department</label>
+                                    <p class="text-gray-900" th:text="${appointment.doctor.department?.name ?: 'N/A'}">Cardiology</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Experience</label>
+                                    <p class="text-gray-900" th:text="${appointment.doctor.experienceYears + ' years'}">5 years</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">License Number</label>
+                                    <p class="text-gray-900" th:text="${appointment.doctor.licenseNumber ?: 'N/A'}">LIC123456</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Details -->
+                    <div class="mt-8 bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>Appointment Details
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Date</label>
+                                <p class="text-gray-900" th:text="${#temporals.format(appointment.appointmentDateTime, 'EEEE, MMMM d, yyyy')}">Friday, August 30, 2025</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Time</label>
+                                <p class="text-gray-900" th:text="${#temporals.format(appointment.appointmentDateTime, 'h:mm a')}">10:00 AM</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Duration</label>
+                                <p class="text-gray-900" th:text="${appointment.durationMinutes != null ? appointment.durationMinutes + ' minutes' : 'N/A'}">30 minutes</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Consultation Fee</label>
+                                <p class="text-gray-900" th:text="${appointment.consultationFee != null ? '$' + appointment.consultationFee : 'N/A'}">$100</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Created Date</label>
+                                <p class="text-gray-900" th:text="${#temporals.format(appointment.createdAt, 'MMMM d, yyyy')}">August 25, 2025</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Last Updated</label>
+                                <p class="text-gray-900" th:text="${#temporals.format(appointment.updatedAt, 'MMMM d, yyyy')}">August 28, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Information -->
+                    <div class="mt-8 bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-notes-medical text-red-600 mr-2"></i>Clinical Information
+                        </h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Reason for Visit</label>
+                                <p class="text-gray-900 mt-1" th:text="${appointment.reason ?: 'Regular checkup'}">Regular checkup</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Notes</label>
+                                <p class="text-gray-900 mt-1" th:text="${appointment.notes ?: 'No notes available'}">Patient experiencing chest pain</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Diagnosis</label>
+                                <p class="text-gray-900 mt-1" th:text="${appointment.diagnosis ?: 'Not diagnosed yet'}">Not diagnosed yet</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Prescription</label>
+                                <p class="text-gray-900 mt-1" th:text="${appointment.prescription ?: 'No prescription available'}">No prescription available</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a th:href="@{/admin/appointments/{id}/edit(id=${appointment.id})}" 
+                           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-edit mr-2"></i>Edit Appointment
+                        </a>
+                        <a th:href="@{/admin/appointments/{id}/cancel(id=${appointment.id})}" 
+                           class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition duration-300"
+                           th:if="${appointment.status.name() != 'CANCELLED' and appointment.status.name() != 'COMPLETED'}"
+                           onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                            <i class="fas fa-times mr-2"></i>Cancel Appointment
+                        </a>
+                        <div th:replace="~{fragments/logout :: logout-btn}"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

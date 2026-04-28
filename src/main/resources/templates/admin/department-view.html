@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Details - Mediverse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <a href="/logout" class="text-red-600 hover:text-red-700">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg min-h-screen">
+            <nav class="mt-8">
+                <a href="/admin/dashboard" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/users" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-users mr-3"></i>Users
+                </a>
+                <a href="/admin/patients" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-injured mr-3"></i>Patients
+                </a>
+                <a href="/admin/doctors" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-user-md mr-3"></i>Doctors
+                </a>
+                <a href="/admin/departments" class="flex items-center px-6 py-3 text-blue-600 bg-blue-50 border-r-2 border-blue-600">
+                    <i class="fas fa-building mr-3"></i>Departments
+                </a>
+                <a href="/admin/appointments" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fas fa-calendar-alt mr-3"></i>Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                    <li><a href="/admin/dashboard" class="hover:text-blue-600">Dashboard</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li><a href="/admin/departments" class="hover:text-blue-600">Departments</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li class="text-gray-900" th:text="${department.name}">Department Details</li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800" th:text="${department.name}">Department Name</h1>
+                        <p class="text-gray-600 mt-2">Department details and information</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a th:href="@{/admin/departments/{id}/edit(id=${department.id})}" 
+                           class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                            <i class="fas fa-edit mr-2"></i>Edit Department
+                        </a>
+                        <a href="/admin/departments" 
+                           class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Departments
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Information -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Information -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">
+                            <i class="fas fa-info-circle text-blue-600 mr-2"></i>Department Information
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Department Name</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" th:text="${department.name}">Cardiology</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Head Doctor</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" th:text="${department.headDoctor}">Dr. Sarah Johnson</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" th:text="${department.email}">cardiology@mediverse.com</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" th:text="${department.phoneNumber}">+1-555-0001</p>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" th:text="${department.description}">
+                                    Comprehensive cardiac care and treatment services.
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"
+                                      th:text="${department.isActive ? 'Active' : 'Inactive'}"
+                                      th:classappend="${department.isActive} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                    Active
+                                </span>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Created Date</label>
+                                <p class="text-gray-900 bg-gray-50 p-3 rounded" 
+                                   th:text="${#temporals.format(department.createdAt, 'MMM dd, yyyy HH:mm')}">Jan 15, 2024 10:30</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Department Doctors -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">
+                                <i class="fas fa-user-md text-blue-600 mr-2"></i>Department Doctors
+                            </h2>
+                            <a th:href="@{/admin/departments/{id}/doctors(id=${department.id})}" 
+                               class="text-blue-600 hover:text-blue-700 text-sm">
+                                View All <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                        
+                        <div th:if="${doctors.empty}" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-user-md text-3xl mb-3"></i>
+                            <p>No doctors assigned to this department</p>
+                        </div>
+
+                        <div th:if="${!doctors.empty}" class="space-y-4">
+                            <div th:each="doctor, iterStat : ${#lists.size(doctors) > 3 ? doctors.subList(0, 3) : doctors}" 
+                                 class="flex items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                    <i class="fas fa-user-md text-blue-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800">
+                                        Dr. <span th:text="${doctor.user.firstName}">John</span> 
+                                        <span th:text="${doctor.user.lastName}">Doe</span>
+                                    </h4>
+                                    <p class="text-gray-600 text-sm" th:text="${doctor.specialization}">Cardiology</p>
+                                    <p class="text-gray-500 text-xs" th:text="${doctor.qualification}">MD, FACC</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                                          th:text="${doctor.isAvailable ? 'Available' : 'Unavailable'}"
+                                          th:classappend="${doctor.isAvailable} ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                        Available
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div th:if="${#lists.size(doctors) > 3}" class="text-center pt-4">
+                                <a th:href="@{/admin/departments/{id}/doctors(id=${department.id})}" 
+                                   class="text-blue-600 hover:text-blue-700 text-sm">
+                                    View <span th:text="${#lists.size(doctors) - 3}">2</span> more doctors
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Sidebar -->
+                <div class="space-y-6">
+                    <!-- Quick Stats -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">
+                            <i class="fas fa-chart-bar text-blue-600 mr-2"></i>Quick Statistics
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-md text-blue-600 mr-2"></i>
+                                    <span class="text-gray-700">Doctors</span>
+                                </div>
+                                <span class="font-bold text-blue-600" th:text="${#lists.size(doctors)}">5</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-purple-50 rounded">
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                                    <span class="text-gray-700">Appointments</span>
+                                </div>
+                                <span class="font-bold text-purple-600" th:text="${appointmentCount}">25</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">
+                            <i class="fas fa-bolt text-blue-600 mr-2"></i>Quick Actions
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <a th:href="@{/admin/departments/{id}/edit(id=${department.id})}" 
+                               class="block w-full bg-green-600 text-white text-center py-2 px-4 rounded hover:bg-green-700 transition duration-300">
+                                <i class="fas fa-edit mr-2"></i>Edit Department
+                            </a>
+                            
+                            <a th:href="@{/admin/departments/{id}/doctors(id=${department.id})}" 
+                               class="block w-full bg-purple-600 text-white text-center py-2 px-4 rounded hover:bg-purple-700 transition duration-300">
+                                <i class="fas fa-users mr-2"></i>Manage Doctors
+                            </a>
+                            
+                            <a href="/admin/departments" 
+                               class="block w-full bg-gray-600 text-white text-center py-2 px-4 rounded hover:bg-gray-700 transition duration-300">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

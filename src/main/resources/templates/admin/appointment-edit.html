@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Appointment - Mediverse Admin</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-hospital text-blue-600 text-2xl"></i>
+                        <span class="text-xl font-bold text-gray-800">Mediverse</span>
+                    </a>
+                    <span class="ml-8 text-gray-600">Admin Dashboard</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Welcome, <span sec:authentication="name"></span></span>
+                    <div th:replace="~{fragments/logout :: logout-link}"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto py-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Edit Appointment
+                    </h1>
+                    <a href="/admin/appointments" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-arrow-left mr-1"></i>Back to Appointments
+                    </a>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Error/Success Messages -->
+                <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span th:text="${error}"></span>
+                </div>
+                
+                <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span th:text="${success}"></span>
+                </div>
+
+                <!-- Appointment Information -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Appointment Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                            <span class="font-medium">Appointment ID:</span>
+                            <span th:text="${appointment.id}"></span>
+                        </div>
+                        <div>
+                            <span class="font-medium">Patient:</span>
+                            <span th:text="${appointment.patient.user.firstName + ' ' + appointment.patient.user.lastName}"></span>
+                        </div>
+                        <div>
+                            <span class="font-medium">Doctor:</span>
+                            <span th:text="${appointment.doctor.user.firstName + ' ' + appointment.doctor.user.lastName}"></span>
+                        </div>
+                        <div>
+                            <span class="font-medium">Created:</span>
+                            <span th:text="${#temporals.format(appointment.createdAt, 'MMM dd, yyyy')}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <form th:action="@{/admin/appointments/{id}/edit(id=${appointment.id})}" th:object="${appointment}" method="post" class="space-y-6">
+                    
+                    <!-- Appointment Details -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Appointment Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Patient -->
+                            <div>
+                                <label for="patient" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-user mr-1"></i>Patient
+                                </label>
+                                <select id="patient" th:field="*{patient}" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Patient</option>
+                                    <option th:each="patient : ${patients}" 
+                                            th:value="${patient.id}" 
+                                            th:text="${patient.user.firstName + ' ' + patient.user.lastName + ' - ' + patient.user.email}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Doctor -->
+                            <div>
+                                <label for="doctor" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-user-md mr-1"></i>Doctor
+                                </label>
+                                <select id="doctor" th:field="*{doctor}" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Doctor</option>
+                                    <option th:each="doctor : ${doctors}" 
+                                            th:value="${doctor.id}" 
+                                            th:text="${doctor.user.firstName + ' ' + doctor.user.lastName + ' - ' + doctor.specialization}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Appointment Date & Time -->
+                            <div>
+                                <label for="appointmentDateTime" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-calendar mr-1"></i>Appointment Date & Time
+                                </label>
+                                <input type="datetime-local" id="appointmentDateTime" th:field="*{appointmentDateTime}" required
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-info-circle mr-1"></i>Status
+                                </label>
+                                <select id="status" th:field="*{status}" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="SCHEDULED">Scheduled</option>
+                                    <option value="CONFIRMED">Confirmed</option>
+                                    <option value="IN_PROGRESS">In Progress</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                    <option value="NO_SHOW">No Show</option>
+                                </select>
+                            </div>
+
+                            <!-- Appointment Type -->
+                            <div>
+                                <label for="appointmentType" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-tag mr-1"></i>Appointment Type
+                                </label>
+                                <select id="appointmentType" th:field="*{appointmentType}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="CONSULTATION">Consultation</option>
+                                    <option value="FOLLOW_UP">Follow Up</option>
+                                    <option value="EMERGENCY">Emergency</option>
+                                    <option value="ROUTINE_CHECKUP">Routine Checkup</option>
+                                    <option value="PROCEDURE">Procedure</option>
+                                    <option value="SURGERY">Surgery</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical Information -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Medical Information</h3>
+                        <div class="space-y-6">
+                            <!-- Reason for Visit -->
+                            <div>
+                                <label for="reasonForVisit" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-clipboard-list mr-1"></i>Reason for Visit
+                                </label>
+                                <textarea id="reasonForVisit" th:field="*{reasonForVisit}" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Brief description of the reason for the appointment"></textarea>
+                            </div>
+
+                            <!-- Symptoms -->
+                            <div>
+                                <label for="symptoms" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-thermometer-half mr-1"></i>Symptoms
+                                </label>
+                                <textarea id="symptoms" th:field="*{symptoms}" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Patient reported symptoms"></textarea>
+                            </div>
+
+                            <!-- Notes -->
+                            <div>
+                                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-sticky-note mr-1"></i>Notes
+                                </label>
+                                <textarea id="notes" th:field="*{notes}" rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Additional notes or observations"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Treatment Information -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Treatment Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Diagnosis -->
+                            <div>
+                                <label for="diagnosis" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-diagnoses mr-1"></i>Diagnosis
+                                </label>
+                                <textarea id="diagnosis" th:field="*{diagnosis}" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Doctor's diagnosis"></textarea>
+                            </div>
+
+                            <!-- Treatment Plan -->
+                            <div>
+                                <label for="treatmentPlan" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-procedures mr-1"></i>Treatment Plan
+                                </label>
+                                <textarea id="treatmentPlan" th:field="*{treatmentPlan}" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Recommended treatment plan"></textarea>
+                            </div>
+
+                            <!-- Prescription -->
+                            <div class="md:col-span-2">
+                                <label for="prescription" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-prescription mr-1"></i>Prescription
+                                </label>
+                                <textarea id="prescription" th:field="*{prescription}" rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Prescribed medications and instructions"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Information -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Financial Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Fee -->
+                            <div>
+                                <label for="fee" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-dollar-sign mr-1"></i>Consultation Fee
+                                </label>
+                                <input type="number" id="fee" th:field="*{fee}" step="0.01" min="0"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Payment Status -->
+                            <div>
+                                <label for="paymentStatus" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-credit-card mr-1"></i>Payment Status
+                                </label>
+                                <select id="paymentStatus" th:field="*{paymentStatus}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="PENDING">Pending</option>
+                                    <option value="PAID">Paid</option>
+                                    <option value="PARTIALLY_PAID">Partially Paid</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                    <option value="REFUNDED">Refunded</option>
+                                </select>
+                            </div>
+
+                            <!-- Payment Method -->
+                            <div>
+                                <label for="paymentMethod" class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-wallet mr-1"></i>Payment Method
+                                </label>
+                                <select id="paymentMethod" th:field="*{paymentMethod}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Payment Method</option>
+                                    <option value="CASH">Cash</option>
+                                    <option value="CARD">Card</option>
+                                    <option value="INSURANCE">Insurance</option>
+                                    <option value="ONLINE">Online</option>
+                                    <option value="BANK_TRANSFER">Bank Transfer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                        <a href="/admin/appointments" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200">
+                            <i class="fas fa-times mr-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                            <i class="fas fa-save mr-1"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
