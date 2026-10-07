@@ -1,4 +1,3 @@
-Absolutely. Since you contributed specifically to the **frontend, database, and documentation**, I’d make the README describe the whole system while keeping the technical claims aligned with what the repository actually contains.
 
 # Mediverse — Hospital Management System
 
